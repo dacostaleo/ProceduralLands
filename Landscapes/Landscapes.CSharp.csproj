@@ -71,7 +71,9 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\DisplayMap.cs" />
     <Compile Include="Assets\Scripts\MapGeneration.cs" />
+    <Compile Include="Assets\Scripts\MeshGenerator.cs" />
     <Compile Include="Assets\Scripts\Noise.cs" />
+    <Compile Include="Assets\Scripts\TextureGenerator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>
