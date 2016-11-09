@@ -3,7 +3,7 @@ using System.Collections;
 
 public static class MeshGenerator {
 
-    public static MeshData GenerateTerrainMesh(float[,] heightMap)
+    public static MeshData GenerateTerrainMesh(float[,] heightMap, float hightMult, AnimationCurve curveHeight, int lod)
     {
         int width = heightMap.GetLength(0);
         int height = heightMap.GetLength(1);
@@ -11,19 +11,24 @@ public static class MeshGenerator {
         int topLeftX = (width - 1) / -2;
         int topLeftZ = (height - 1) / 2;
 
-        MeshData meshData = new MeshData(width, height);
+        int meshSimplification = (lod == 0) ? 1 : (lod * 2);
+        int vertexPerLine = (width - 1) / meshSimplification + 1;
+
+
+        MeshData meshData = new MeshData(vertexPerLine, vertexPerLine);
         int vertexIndex = 0;
 
-        for (int y = 0; y < height; y++)
+
+        for (int y = 0; y < height; y+= meshSimplification)
         {
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < width; x+=meshSimplification)
             {
-                meshData.vertices[vertexIndex] = new Vector3(topLeftX + x, heightMap[x, y] * 30, topLeftZ - y);
+                meshData.vertices[vertexIndex] = new Vector3(topLeftX + x, curveHeight.Evaluate(heightMap[x, y]) * hightMult, topLeftZ - y);
 
                 if (x < width - 1 && y < height - 1)
                 {
-                    meshData.AddTriangle(vertexIndex, vertexIndex + width + 1, vertexIndex + width);
-                    meshData.AddTriangle(vertexIndex + 1, vertexIndex + width + 1, vertexIndex); //DIFERENTE
+                    meshData.AddTriangle(vertexIndex, vertexIndex + vertexPerLine + 1, vertexIndex + vertexPerLine);
+                    meshData.AddTriangle(vertexIndex + 1, vertexIndex + vertexPerLine + 1, vertexIndex); //DIFERENTE
                 }
 
                 meshData.uvs[vertexIndex] = new Vector2(x / (float)width, y / (float)height);
